@@ -1,4 +1,4 @@
-package com.ItauJava;
+package com.kauegalons.transactions;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
