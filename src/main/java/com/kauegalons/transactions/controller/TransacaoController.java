@@ -4,10 +4,9 @@ import com.kauegalons.transactions.dto.TransacaoDTO;
 import com.kauegalons.transactions.service.TransacaoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.IllegalFormatException;
 
 @RestController
 @RequestMapping ("/transacao")
@@ -22,10 +21,18 @@ public class TransacaoController {
     @PostMapping
     public ResponseEntity<Void> criarTransacao(@RequestBody TransacaoDTO transacaoDTO) {
 
-        transacaoService.validarTransacao(transacaoDTO);
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        try {
+            transacaoService.criarTransacao(transacaoDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }catch(IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
     }
 
+    @DeleteMapping
+    public ResponseEntity<Void> deletarTransacao() {
+        transacaoService.apagarTodasTransacoes();
+        return ResponseEntity.ok().build();
+    }
 
 }
