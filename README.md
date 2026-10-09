@@ -24,7 +24,7 @@ controller  → HTTP layer: receives requests and returns responses
 service     → business rules and validations
 repository  → thread-safe in-memory storage
 dto         → request/response contracts
-exception   → centralized error handling
+model       → domain entities
 ```
 
 ## API Endpoints
@@ -106,11 +106,12 @@ The API will be available at `http://localhost:8080`.
 
 ## Roadmap
 
-- [ ] `POST /transacao` endpoint
-- [ ] `DELETE /transacao` endpoint
+- [x] `POST /transacao` endpoint with validation rules
+- [x] Thread-safe in-memory storage (`ConcurrentLinkedQueue`)
+- [x] `DELETE /transacao` endpoint
 - [ ] `GET /estatistica` endpoint
 - [ ] Unit and integration tests (including error scenarios)
-- [ ] Centralized error handling
+- [ ] Centralized error handling (`400 Bad Request` without body for malformed JSON)
 - [ ] Configurable statistics time window
 - [ ] Logging
 - [ ] Health check (Spring Boot Actuator)
