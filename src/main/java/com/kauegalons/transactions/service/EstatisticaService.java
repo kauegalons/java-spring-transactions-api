@@ -25,7 +25,7 @@ public class EstatisticaService {
         OffsetDateTime ultimoMinuto = OffsetDateTime.now().minusSeconds(60);
 
         List<Transacao> transacoesUltimoMinuto = transacaoRepository.getListaTransacoes().stream()
-                .filter(transacao -> transacao.getDataHora().isAfter(ultimoMinuto))
+                .filter(transacao -> !transacao.getDataHora().isBefore(ultimoMinuto))
                 .toList();
 
         if (transacoesUltimoMinuto.isEmpty()) {
