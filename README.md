@@ -28,6 +28,21 @@ model       → domain entities
 exception   → centralized error handling
 ```
 
+## Design Decisions
+
+### `BigDecimal` instead of `double` for monetary values
+
+The challenge suggests `DoubleSummaryStatistics` as a way to compute the statistics. It would make the code shorter and calculate everything in a single pass, but it requires converting values to `double`.
+
+`double` is a binary floating-point type and cannot represent many decimal values exactly, which leads to rounding errors:
+
+```java
+0.1 + 0.2                                          // double     → 0.30000000000000004
+new BigDecimal("0.1").add(new BigDecimal("0.2"))   // BigDecimal → 0.3
+```
+
+Since this API handles **financial transactions**, precision was prioritized over brevity, so all values (`valor`, `sum`, `avg`, `min`, `max`) are kept as `BigDecimal`. The average is rounded to 3 decimal places using `RoundingMode.HALF_EVEN` (banker's rounding), which reduces cumulative rounding bias.
+
 ## API Endpoints
 
 ### `POST /transacao` — Create a transaction
