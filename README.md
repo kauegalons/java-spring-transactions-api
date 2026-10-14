@@ -25,6 +25,7 @@ service     → business rules and validations
 repository  → thread-safe in-memory storage
 dto         → request/response contracts
 model       → domain entities
+exception   → centralized error handling
 ```
 
 ## API Endpoints
@@ -111,7 +112,7 @@ The API will be available at `http://localhost:8080`.
 - [x] `DELETE /transacao` endpoint
 - [x] `GET /estatistica` endpoint (last 60 seconds, `BigDecimal` precision)
 - [ ] Unit and integration tests (including error scenarios)
-- [ ] Centralized error handling (`400 Bad Request` without body for malformed JSON)
+- [x] Centralized error handling (`400 Bad Request` without body for malformed JSON)
 - [ ] Configurable statistics time window
 - [ ] Logging
 - [ ] Health check (Spring Boot Actuator)
