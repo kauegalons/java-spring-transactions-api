@@ -109,7 +109,7 @@ The API will be available at `http://localhost:8080`.
 - [x] `POST /transacao` endpoint with validation rules
 - [x] Thread-safe in-memory storage (`ConcurrentLinkedQueue`)
 - [x] `DELETE /transacao` endpoint
-- [ ] `GET /estatistica` endpoint
+- [x] `GET /estatistica` endpoint (last 60 seconds, `BigDecimal` precision)
 - [ ] Unit and integration tests (including error scenarios)
 - [ ] Centralized error handling (`400 Bad Request` without body for malformed JSON)
 - [ ] Configurable statistics time window
