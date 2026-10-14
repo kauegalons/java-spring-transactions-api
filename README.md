@@ -129,7 +129,7 @@ The API will be available at `http://localhost:8080`.
 - [ ] Unit and integration tests (including error scenarios)
 - [x] Centralized error handling (`400 Bad Request` without body for malformed JSON)
 - [ ] Configurable statistics time window
-- [ ] Logging
+- [x] Logging (SLF4J, log level configurable via `application.properties`)
 - [ ] Health check (Spring Boot Actuator)
 - [ ] API documentation (Swagger / OpenAPI)
 - [ ] Docker support

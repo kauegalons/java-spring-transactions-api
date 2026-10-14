@@ -3,11 +3,13 @@ package com.kauegalons.transactions.service;
 import com.kauegalons.transactions.dto.TransacaoDTO;
 import com.kauegalons.transactions.model.Transacao;
 import com.kauegalons.transactions.repository.TransacaoRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+@Slf4j
 @Service
 public class TransacaoService {
 
@@ -18,10 +20,12 @@ public class TransacaoService {
     }
 
     public void criarTransacao(TransacaoDTO transacaoDTO) {
+        log.debug("Validando transação: valor={}, dataHora={}", transacaoDTO.getValor(), transacaoDTO.getDataHora());
         validarTransacao(transacaoDTO);
 
         Transacao novaTransacao = new Transacao(transacaoDTO.getValor(), transacaoDTO.getDataHora());
         transacaoRepository.salvarTransacao(novaTransacao);
+        log.info("Transação registrada com sucesso.");
     }
 
 
@@ -46,5 +50,6 @@ public class TransacaoService {
 
     public void apagarTodasTransacoes() {
         transacaoRepository.apagarTodasTransacoes();
+        log.info("Todas as transações foram apagadas.");
     }
 }

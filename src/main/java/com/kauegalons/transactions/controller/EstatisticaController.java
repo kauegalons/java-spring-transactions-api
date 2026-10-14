@@ -2,11 +2,13 @@ package com.kauegalons.transactions.controller;
 
 import com.kauegalons.transactions.dto.EstatisticaDTO;
 import com.kauegalons.transactions.service.EstatisticaService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/estatistica")
 public class EstatisticaController {
@@ -19,6 +21,7 @@ public class EstatisticaController {
 
     @GetMapping
     public ResponseEntity<EstatisticaDTO> getEstatistica() {
+        log.debug("Requisição recebida para obter estatísticas dos últimos 60 segundos.");
         EstatisticaDTO estatisticas = estatisticaService.getEstatisticas();
         return ResponseEntity.ok(estatisticas);
     }
