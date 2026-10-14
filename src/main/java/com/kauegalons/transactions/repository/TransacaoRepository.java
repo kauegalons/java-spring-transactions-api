@@ -23,4 +23,9 @@ public class TransacaoRepository {
         listaTransacoes.clear();
     }
 
+
+    public Queue<Transacao> getListaTransacoes() {
+        return new ConcurrentLinkedQueue<>(listaTransacoes);
+    }
+
 }
