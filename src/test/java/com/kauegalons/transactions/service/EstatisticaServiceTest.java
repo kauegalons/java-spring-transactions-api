@@ -1,5 +1,6 @@
 package com.kauegalons.transactions.service;
 
+import com.kauegalons.transactions.config.EstatisticaConfig;
 import com.kauegalons.transactions.dto.EstatisticaDTO;
 import com.kauegalons.transactions.model.Transacao;
 import com.kauegalons.transactions.repository.TransacaoRepository;
@@ -19,7 +20,7 @@ class EstatisticaServiceTest {
     @BeforeEach
     void setUp() {
         transacaoRepository = new TransacaoRepository();
-        estatisticaService = new EstatisticaService(transacaoRepository);
+        estatisticaService = new EstatisticaService(transacaoRepository, new EstatisticaConfig(60));
     }
 
 
@@ -126,6 +127,25 @@ class EstatisticaServiceTest {
         assertThat(resultado.getAvg()).isEqualByComparingTo("16.667");
         assertThat(resultado.getMin()).isEqualByComparingTo("0");
         assertThat(resultado.getMax()).isEqualByComparingTo("30");
+    }
+
+    @Test
+    void deveRespeitarJanelaDeTempoConfigurada(){
+        EstatisticaService estatisticaService120Segundos =
+                new EstatisticaService(transacaoRepository, new EstatisticaConfig(120));
+
+        OffsetDateTime agora = OffsetDateTime.now();
+        transacaoRepository.salvarTransacao(new Transacao(new BigDecimal("10"), agora.minusSeconds(90)));
+        transacaoRepository.salvarTransacao(new Transacao(new BigDecimal("20"), agora));
+        transacaoRepository.salvarTransacao(new Transacao(new BigDecimal("1000"), agora.minusSeconds(150)));
+
+        EstatisticaDTO resultado = estatisticaService120Segundos.getEstatisticas();
+
+        assertEquals(2, resultado.getCount());
+        assertThat(resultado.getSum()).isEqualByComparingTo("30");
+        assertThat(resultado.getAvg()).isEqualByComparingTo("15.000");
+        assertThat(resultado.getMin()).isEqualByComparingTo("10");
+        assertThat(resultado.getMax()).isEqualByComparingTo("20");
     }
 
 }

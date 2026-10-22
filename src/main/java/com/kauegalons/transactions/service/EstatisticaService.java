@@ -1,5 +1,6 @@
 package com.kauegalons.transactions.service;
 
+import com.kauegalons.transactions.config.EstatisticaConfig;
 import com.kauegalons.transactions.dto.EstatisticaDTO;
 import com.kauegalons.transactions.model.Transacao;
 import com.kauegalons.transactions.repository.TransacaoRepository;
@@ -18,43 +19,46 @@ public class EstatisticaService {
 
     private final TransacaoRepository transacaoRepository;
 
-    public EstatisticaService(TransacaoRepository transacaoRepository) {
+    private final EstatisticaConfig estatisticaConfig;
+
+    public EstatisticaService(TransacaoRepository transacaoRepository, EstatisticaConfig estatisticaConfig) {
         this.transacaoRepository = transacaoRepository;
+        this.estatisticaConfig = estatisticaConfig;
     }
 
     public EstatisticaDTO getEstatisticas() {
         long inicio = System.nanoTime();
 
-        OffsetDateTime ultimoMinuto = OffsetDateTime.now().minusSeconds(60);
+        OffsetDateTime limiteInicial = OffsetDateTime.now().minusSeconds(estatisticaConfig.segundos());
 
-        List<Transacao> transacoesUltimoMinuto = transacaoRepository.getListaTransacoes().stream()
-                .filter(transacao -> !transacao.getDataHora().isBefore(ultimoMinuto))
+        List<Transacao> transacoesNaJanela = transacaoRepository.getListaTransacoes().stream()
+                .filter(transacao -> !transacao.getDataHora().isBefore(limiteInicial))
                 .toList();
 
-        if (transacoesUltimoMinuto.isEmpty()) {
-            log.debug("Nenhuma transação nos últimos 60 segundos. Retornando estatísticas zeradas.");
+        if (transacoesNaJanela.isEmpty()) {
+            log.debug("Nenhuma transação nos últimos {} segundos. Retornando estatísticas zeradas.", estatisticaConfig.segundos());
             return new EstatisticaDTO(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         }
 
-        BigDecimal max = transacoesUltimoMinuto.stream()
+        BigDecimal max = transacoesNaJanela.stream()
                 .map(Transacao::getValor)
                 .max(BigDecimal::compareTo)
                 .orElse(BigDecimal.ZERO);
 
-        BigDecimal min = transacoesUltimoMinuto.stream()
+        BigDecimal min = transacoesNaJanela.stream()
                 .map(Transacao::getValor)
                 .min(BigDecimal::compareTo)
                 .orElse(BigDecimal.ZERO);
 
-        BigDecimal sum = transacoesUltimoMinuto.stream()
+        BigDecimal sum = transacoesNaJanela.stream()
                 .map(Transacao::getValor)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal avg = sum.divide(BigDecimal.valueOf(transacoesUltimoMinuto.size()), 3, RoundingMode.HALF_EVEN);
+        BigDecimal avg = sum.divide(BigDecimal.valueOf(transacoesNaJanela.size()), 3, RoundingMode.HALF_EVEN);
 
         long duracaoMicros = (System.nanoTime() - inicio) / 1_000;
-        log.debug("Estatísticas calculadas para {} transações em {} microssegundos.", transacoesUltimoMinuto.size(), duracaoMicros);
+        log.debug("Estatísticas calculadas para {} transações em {} microssegundos.", transacoesNaJanela.size(), duracaoMicros);
 
-        return new EstatisticaDTO(transacoesUltimoMinuto.size(), sum, avg, min, max);
+        return new EstatisticaDTO(transacoesNaJanela.size(), sum, avg, min, max);
     }
 }

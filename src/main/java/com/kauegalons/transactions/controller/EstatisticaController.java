@@ -21,7 +21,7 @@ public class EstatisticaController {
 
     @GetMapping
     public ResponseEntity<EstatisticaDTO> getEstatistica() {
-        log.debug("Requisição recebida para obter estatísticas dos últimos 60 segundos.");
+        log.debug("Requisição recebida para obter estatísticas.");
         EstatisticaDTO estatisticas = estatisticaService.getEstatisticas();
         return ResponseEntity.ok(estatisticas);
     }
