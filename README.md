@@ -12,6 +12,7 @@ All data is stored **in memory** — no database or cache systems are used, as r
 - Spring Boot 4
 - Spring Web MVC
 - Lombok
+- springdoc-openapi (Swagger UI)
 - Maven
 - JUnit 5
 
@@ -26,6 +27,8 @@ repository  → thread-safe in-memory storage
 dto         → request/response contracts
 model       → domain entities
 exception   → centralized error handling
+config      → application and OpenAPI configuration
+docs        → OpenAPI documentation interfaces implemented by the controllers
 ```
 
 ## Design Decisions
@@ -43,7 +46,13 @@ new BigDecimal("0.1").add(new BigDecimal("0.2"))   // BigDecimal → 0.3
 
 Since this API handles **financial transactions**, precision was prioritized over brevity, so all values (`valor`, `sum`, `avg`, `min`, `max`) are kept as `BigDecimal`. The average is rounded to 3 decimal places using `RoundingMode.HALF_EVEN` (banker's rounding), which reduces cumulative rounding bias.
 
+### OpenAPI annotations in separate interfaces
+
+Swagger annotations live in interfaces under the `docs` package (`TransacaoControllerDoc`, `EstatisticaControllerDoc`), which the controllers implement. This keeps the controllers focused on HTTP handling, while the documentation stays in one place.
+
 ## API Endpoints
+
+All responses have no body, except for `GET /estatistica`. The API only accepts and returns JSON (`application/json`).
 
 ### `POST /transacao` — Create a transaction
 
@@ -64,6 +73,7 @@ Validation rules:
 | `201 Created` | Transaction accepted and stored |
 | `422 Unprocessable Entity` | Transaction failed one or more validation rules |
 | `400 Bad Request` | Malformed or unreadable request |
+| `415 Unsupported Media Type` | Request body is not sent as `application/json` |
 
 ### `DELETE /transacao` — Delete all transactions
 
@@ -73,7 +83,7 @@ Validation rules:
 
 ### `GET /estatistica` — Get statistics
 
-Returns statistics for transactions that occurred in the **last 60 seconds**:
+Returns statistics for transactions that occurred in the **last 60 seconds** (configurable, see [Configuration](#configuration)). Transactions exactly at the window boundary are included:
 
 ```json
 {
@@ -90,6 +100,29 @@ If there are no transactions in that time window, all values are returned as `0`
 | Status | Description |
 |--------|-------------|
 | `200 OK` | Statistics successfully calculated |
+| `406 Not Acceptable` | Client does not accept `application/json` responses |
+
+## API Documentation
+
+With the application running, the interactive documentation is available at:
+
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- OpenAPI spec (JSON): `http://localhost:8080/v3/api-docs`
+
+## Configuration
+
+Properties in `src/main/resources/application.properties`:
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `estatistica.segundos` | `60` | Time window, in seconds, used to calculate the statistics. Must be a positive number, otherwise the application fails on startup. |
+| `logging.level.com.kauegalons.transactions` | `INFO` | Application log level. Use `DEBUG` to see transaction details and statistics calculation time. |
+
+Any property can be overridden at startup without recompiling:
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.arguments=--estatistica.segundos=120
+```
 
 ## Getting Started
 
@@ -128,10 +161,11 @@ The API will be available at `http://localhost:8080`.
 - [x] `GET /estatistica` endpoint (last 60 seconds, `BigDecimal` precision)
 - [ ] Unit and integration tests (including error scenarios)
 - [x] Centralized error handling (`400 Bad Request` without body for malformed JSON)
-- [ ] Configurable statistics time window
+- [x] Configurable statistics time window
 - [x] Logging (SLF4J, log level configurable via `application.properties`)
 - [ ] Health check (Spring Boot Actuator)
-- [ ] API documentation (Swagger / OpenAPI)
+- [x] API documentation (Swagger / OpenAPI)
+- [x] JSON-only requests and responses (`415` / `406` without body)
 - [ ] Docker support
 
 ## Author
