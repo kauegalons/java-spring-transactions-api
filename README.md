@@ -13,6 +13,7 @@ All data is stored **in memory** — no database or cache systems are used, as r
 - Spring Web MVC
 - Lombok
 - springdoc-openapi (Swagger UI)
+- Spring Boot Actuator (health check)
 - Maven
 - JUnit 5
 
@@ -109,6 +110,16 @@ With the application running, the interactive documentation is available at:
 - Swagger UI: `http://localhost:8080/swagger-ui.html`
 - OpenAPI spec (JSON): `http://localhost:8080/v3/api-docs`
 
+## Health Check
+
+`GET http://localhost:8080/actuator/health` returns the application status:
+
+```json
+{ "status": "UP" }
+```
+
+Only the `health` endpoint is exposed and without internal details. Other Actuator endpoints (`env`, `beans`, `heapdump`, ...) remain disabled for security.
+
 ## Configuration
 
 Properties in `src/main/resources/application.properties`:
@@ -159,11 +170,12 @@ The API will be available at `http://localhost:8080`.
 - [x] Thread-safe in-memory storage (`ConcurrentLinkedQueue`)
 - [x] `DELETE /transacao` endpoint
 - [x] `GET /estatistica` endpoint (last 60 seconds, `BigDecimal` precision)
-- [ ] Unit and integration tests (including error scenarios)
+- [x] Unit tests (including error scenarios)
+- [ ] Integration tests (HTTP status codes and JSON contracts)
 - [x] Centralized error handling (`400 Bad Request` without body for malformed JSON)
 - [x] Configurable statistics time window
 - [x] Logging (SLF4J, log level configurable via `application.properties`)
-- [ ] Health check (Spring Boot Actuator)
+- [x] Health check (Spring Boot Actuator)
 - [x] API documentation (Swagger / OpenAPI)
 - [x] JSON-only requests and responses (`415` / `406` without body)
 - [ ] Docker support
