@@ -56,6 +56,7 @@ public interface EstatisticaControllerDoc {
                             }
                     )
             ),
+            @ApiResponse(responseCode = "406", description = "Not acceptable: the client must accept `application/json` responses.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Unexpected error while processing the request.", content = @Content)
     })
     ResponseEntity<EstatisticaDTO> getEstatistica();

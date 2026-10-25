@@ -42,6 +42,7 @@ public interface TransacaoControllerDoc {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Transaction accepted and stored.", content = @Content),
             @ApiResponse(responseCode = "400", description = "Malformed or unreadable request body.", content = @Content),
+            @ApiResponse(responseCode = "415", description = "Unsupported media type: the request body must be sent as `application/json`.", content = @Content),
             @ApiResponse(responseCode = "422", description = "Transaction failed one or more validation rules: missing field, negative value or future date.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Unexpected error while processing the request.", content = @Content)
     })

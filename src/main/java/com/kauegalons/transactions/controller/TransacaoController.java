@@ -5,6 +5,7 @@ import com.kauegalons.transactions.dto.TransacaoDTO;
 import com.kauegalons.transactions.service.TransacaoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class TransacaoController implements TransacaoControllerDoc {
     }
 
     @Override
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> criarTransacao(@RequestBody TransacaoDTO transacaoDTO) {
 
         try {

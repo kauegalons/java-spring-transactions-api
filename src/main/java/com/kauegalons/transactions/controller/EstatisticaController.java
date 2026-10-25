@@ -4,6 +4,7 @@ import com.kauegalons.transactions.docs.EstatisticaControllerDoc;
 import com.kauegalons.transactions.dto.EstatisticaDTO;
 import com.kauegalons.transactions.service.EstatisticaService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,7 @@ public class EstatisticaController implements EstatisticaControllerDoc {
     }
 
     @Override
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EstatisticaDTO> getEstatistica() {
         log.debug("Requisição recebida para obter estatísticas.");
         EstatisticaDTO estatisticas = estatisticaService.getEstatisticas();
