@@ -1,5 +1,6 @@
 package com.kauegalons.transactions.controller;
 
+import com.kauegalons.transactions.docs.EstatisticaControllerDoc;
 import com.kauegalons.transactions.dto.EstatisticaDTO;
 import com.kauegalons.transactions.service.EstatisticaService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/estatistica")
-public class EstatisticaController {
+public class EstatisticaController implements EstatisticaControllerDoc {
 
     private final EstatisticaService estatisticaService;
 
@@ -19,6 +20,7 @@ public class EstatisticaController {
         this.estatisticaService = estatisticaService;
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<EstatisticaDTO> getEstatistica() {
         log.debug("Requisição recebida para obter estatísticas.");

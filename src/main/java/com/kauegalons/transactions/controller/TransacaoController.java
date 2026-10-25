@@ -1,5 +1,6 @@
 package com.kauegalons.transactions.controller;
 
+import com.kauegalons.transactions.docs.TransacaoControllerDoc;
 import com.kauegalons.transactions.dto.TransacaoDTO;
 import com.kauegalons.transactions.service.TransacaoService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping ("/transacao")
-public class TransacaoController {
+public class TransacaoController implements TransacaoControllerDoc {
 
     private final TransacaoService transacaoService;
 
@@ -18,6 +19,7 @@ public class TransacaoController {
         this.transacaoService = transacaoService;
     }
 
+    @Override
     @PostMapping
     public ResponseEntity<Void> criarTransacao(@RequestBody TransacaoDTO transacaoDTO) {
 
@@ -30,6 +32,7 @@ public class TransacaoController {
         }
     }
 
+    @Override
     @DeleteMapping
     public ResponseEntity<Void> deletarTransacao() {
         transacaoService.apagarTodasTransacoes();
